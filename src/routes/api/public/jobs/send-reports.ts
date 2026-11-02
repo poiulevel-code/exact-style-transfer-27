@@ -14,7 +14,7 @@ export const Route = createFileRoute("/api/public/jobs/send-reports")({
         if (kind === "monthly" && !isLastDayOfMonth(today)) return Response.json({ skipped: "not last day" });
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { sendReportFor } = await import("@/lib/report-mail.server");
-        const { data, error } = await supabaseAdmin.from("report_subscriptions").select("sync_key, recipients, students, attendance").neq("recipients", []).limit(50);
+        const { data, error } = await supabaseAdmin.from("report_subscriptions").select("sync_key, recipients, daily_recipients, students, attendance").neq("recipients", []).limit(50);
         if (error) return Response.json({ error: error.message }, { status: 500 });
         let sent = 0;
         const failed: string[] = [];

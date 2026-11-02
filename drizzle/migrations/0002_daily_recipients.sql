@@ -1,0 +1,1 @@
+ALTER TABLE public.report_subscriptions ADD COLUMN daily_recipients text[];

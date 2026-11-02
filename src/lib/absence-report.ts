@@ -62,3 +62,10 @@ export function absenceEmail(kind: ReportKind, range: Range, lines: AbsenceLine[
 export function parseEmails(text: string) {
   return [...new Set(text.split(/[\s,;]+/).map((s) => s.trim().toLowerCase()).filter((s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)))];
 }
+
+/** Who gets a report: weekly/monthly always go to everyone; daily goes to the chosen teachers (empty/null choice = everyone). */
+export function reportTargets(kind: ReportKind, recipients: string[], daily: string[] | null | undefined): string[] {
+  if (kind !== "daily" || !daily || !daily.length) return recipients;
+  const chosen = recipients.filter((r) => daily.includes(r));
+  return chosen.length ? chosen : recipients;
+}
