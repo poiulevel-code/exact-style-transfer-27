@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Sheet } from "@/components/app/Sheet";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useStore } from "@/lib/store";
 import { sendReportNow, syncReportData } from "@/lib/report-mail.functions";
 
@@ -34,20 +33,10 @@ export function EmailReports({ open, onClose }: { open: boolean; onClose: () => 
   const [text, setText] = useState("");
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => { const c = loadCfg(); setCfg(c); setText(c.recipients.join("\n")); }, []);
 
   const push = (c: Cfg) => sync({ data: { key: c.key, recipients: c.recipients, students, attendance } });
-
-  // Auto-copy data to Cloud a moment after any change, once teachers are saved.
-  useEffect(() => {
-    if (!cfg?.recipients.length) return;
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => { push(cfg).catch((e) => console.error("Rapor verisi kopyalanamadı", e)); }, 3000);
-    return () => clearTimeout(timer.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [students, attendance, cfg]);
 
   const save = async () => {
     if (!cfg) return;
@@ -88,7 +77,6 @@ export function EmailReports({ open, onClose }: { open: boolean; onClose: () => 
         placeholder="hoca@ornek.com"
         className="mt-1 w-full rounded-xl border border-input bg-background p-3 text-sm"
       />
-      <Input className="hidden" readOnly />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button onClick={save} disabled={busy || !cfg}>Kaydet</Button>
         <Button variant="outline" onClick={test} disabled={busy || !cfg?.recipients.length}>Test gönder</Button>
@@ -96,4 +84,22 @@ export function EmailReports({ open, onClose }: { open: boolean; onClose: () => 
       {msg && <p className="mt-3 text-center text-sm text-primary">{msg}</p>}
     </Sheet>
   );
+}
+
+/** Mounted once in the app shell: copies data to Cloud a few seconds after any change, once teachers are saved. */
+export function ReportAutoSync() {
+  const { students, attendance } = useStore();
+  const sync = useServerFn(syncReportData);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => {
+    let c: Cfg;
+    try { c = JSON.parse(localStorage.getItem(CFG_KEY) ?? "") as Cfg; } catch { return; }
+    if (!c?.recipients?.length) return;
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      sync({ data: { key: c.key, recipients: c.recipients, students, attendance } }).catch((e) => console.error("Rapor verisi kopyalanamadı", e));
+    }, 3000);
+    return () => clearTimeout(timer.current);
+  }, [students, attendance, sync]);
+  return null;
 }
