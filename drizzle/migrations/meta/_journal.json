@@ -15,6 +15,13 @@
       "when": 1793642230091,
       "tag": "0001_report_subscriptions_comment",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793644039144,
+      "tag": "0002_daily_recipients",
+      "breakpoints": true
     }
   ]
 }

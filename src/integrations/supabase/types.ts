@@ -17,6 +17,7 @@ export type Database = {
       report_subscriptions: {
         Row: {
           attendance: Json
+          daily_recipients: string[] | null
           recipients: string[]
           students: Json
           sync_key: string
@@ -24,6 +25,7 @@ export type Database = {
         }
         Insert: {
           attendance?: Json
+          daily_recipients?: string[] | null
           recipients?: string[]
           students?: Json
           sync_key: string
@@ -31,6 +33,7 @@ export type Database = {
         }
         Update: {
           attendance?: Json
+          daily_recipients?: string[] | null
           recipients?: string[]
           students?: Json
           sync_key?: string
