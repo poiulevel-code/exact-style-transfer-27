@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "@/components/app/AppShell";
 import { StoreProvider } from "../lib/store";
+import { ReportAutoSync } from "../components/app/EmailReports";
 import { installChunkReloadHandler, isChunkLoadError, reloadForChunkError } from "../lib/chunk-reload";
 
 installChunkReloadHandler();
@@ -128,6 +129,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <StoreProvider>
+        <ReportAutoSync />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <AppShell>
           <Outlet />

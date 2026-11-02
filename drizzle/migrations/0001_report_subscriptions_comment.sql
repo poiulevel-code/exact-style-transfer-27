@@ -1,0 +1,1 @@
+COMMENT ON TABLE public.report_subscriptions IS 'Teacher emails and a copy of attendance used for automatic report emails.';

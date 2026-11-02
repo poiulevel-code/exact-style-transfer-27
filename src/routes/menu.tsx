@@ -1,7 +1,8 @@
 import { localIso } from "@/lib/utils";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Download, Upload, FileDown, UserPlus, Sparkles } from "@/components/app/icons";
+import { Download, Upload, FileDown, UserPlus, Sparkles, Mail } from "@/components/app/icons";
+import { EmailReports } from "@/components/app/EmailReports";
 import { ReportSheet } from "@/components/app/ReportSheet";
 import { BlankAttendanceSheet } from "@/components/app/BlankAttendanceSheet";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ function Menu() {
   const [reportOpen, setReportOpen] = useState(false);
   const [blankOpen, setBlankOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const [mailOpen, setMailOpen] = useState(false);
 
   const exportData = async () => {
     const ids = tutanaklar.flatMap((t) => [t.photoId, t.docId]).filter((x): x is string => Boolean(x));
@@ -80,6 +82,8 @@ function Menu() {
         </Button>
         <Link to="/ai-tutanak" className={btn}><Sparkles className="h-5 w-5 text-primary" /> AI ile Tutanak Hazırla</Link>
         <button onClick={() => setReportOpen(true)} className={btn}><FileDown className="h-5 w-5 text-primary" /> Yoklama Raporu İndir (PDF / Excel)</button>
+        <button onClick={() => setMailOpen(true)} className={btn}><Mail className="h-5 w-5 text-primary" /> Otomatik Rapor E-postası</button>
+        <EmailReports open={mailOpen} onClose={() => setMailOpen(false)} />
         <ReportSheet open={reportOpen} onClose={() => setReportOpen(false)} />
         <Button variant="outline" onClick={() => setBlankOpen(true)} className="h-auto w-full justify-start whitespace-normal py-4"><FileDown className="text-primary" /> Boş Yoklama Çizelgesi İndir (PDF / Excel)</Button>
         <BlankAttendanceSheet open={blankOpen} onClose={() => setBlankOpen(false)} />
